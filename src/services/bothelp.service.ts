@@ -27,6 +27,9 @@ export interface IBothelpService extends ServiceSchema {
 
 export class BothelpService extends Service
 {
+   private readonly _MAX_RETRY = -1;
+
+
    constructor(broker: ServiceBroker)
    {
       super(broker);
@@ -52,21 +55,23 @@ export class BothelpService extends Service
    }
 
 
-   public send(params: IBothelpParams): Promise<IServiceCallingResult>
+   public async send(params: IBothelpParams, maxRetry = this._MAX_RETRY, tries = 0): Promise<IServiceCallingResult>
    {
-      return this._fetch(params)
-         .catch(() => {
-            console.info(`sms sending error №1`);
-            return this._fetch(params);
-         })
-         .catch(() => {
-            console.info(`sms sending error №2`);
-            return this._fetch(params);
-         })
-         .catch((err) => {
-            console.info(`sms sending error №3`);
-            throw err;
-         });
+      try {
+         const result = await this._fetch(params);
+         return result;
+
+      } catch (err) {
+         tries++;
+         console.info(`sms sending error №${tries}`);
+
+         if (maxRetry === -1 || tries < maxRetry) {
+            return this.send(params, maxRetry, tries);
+         }
+
+         console.info(err);
+         throw err;
+      }
 
       // let count = 0;
 

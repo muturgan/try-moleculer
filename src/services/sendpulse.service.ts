@@ -27,6 +27,9 @@ export interface ISendpulseService extends ServiceSchema {
 
 export class SendpulseService extends Service
 {
+   private readonly _MAX_RETRY = -1;
+
+
    constructor(broker: ServiceBroker)
    {
       super(broker);
@@ -50,21 +53,23 @@ export class SendpulseService extends Service
    }
 
 
-   public send(params: ISendpulseParams): Promise<IServiceCallingResult>
+   public async send(params: ISendpulseParams, maxRetry = this._MAX_RETRY, tries = 0): Promise<IServiceCallingResult>
    {
-      return this._fetch(params)
-         .catch(() => {
-            console.info(`sms sending error №1`);
-            return this._fetch(params);
-         })
-         .catch(() => {
-            console.info(`sms sending error №2`);
-            return this._fetch(params);
-         })
-         .catch((err) => {
-            console.info(`email sending error №3`);
-            throw err;
-         });
+      try {
+         const result = await this._fetch(params);
+         return result;
+
+      } catch (err) {
+         tries++;
+         console.info(`email sending error №${tries}`);
+
+         if (maxRetry === -1 || tries < maxRetry) {
+            return this.send(params, maxRetry, tries);
+         }
+
+         console.info(err);
+         throw err;
+      }
 
       // let count = 0;
 
