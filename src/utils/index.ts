@@ -1,9 +1,9 @@
 import type { CheckerFunction, ValidationError } from 'fastest-validator';
 
 // const re = /^((\+7|7|8)+([0-9]){10})$/gm;
-const re = /\d/g;
+const re = /^[0-9]+$/;
 
-export const validatePhoneNumber: CheckerFunction<string> = (val: string, _, path: string): true | ValidationError[] =>
+export const validatePhoneNumber: CheckerFunction<string> = (val: string, _: unknown, path: string): true | ValidationError[] =>
 {
    const isValid = re.test(val);
    return isValid === true

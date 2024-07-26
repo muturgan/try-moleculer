@@ -1,5 +1,5 @@
 import { ServiceBroker } from 'moleculer';
-import { BothelpService, CoreService, EmailService, SendpulseService, SmsService, WebService } from './services';
+import { BothelpService, CoreService, EmailService, SendpulseService, SmsService, WebService } from './services/index.js';
 
 const broker = new ServiceBroker({
    logger: false,

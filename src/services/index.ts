@@ -1,6 +1,6 @@
-export * from './bothelp.service';
-export * from './core.service';
-export * from './email.service';
-export * from './sendpulse.service';
-export * from './sms.service';
-export * from './web.service';
+export { BothelpService, IBothelpParams, IBothelpService } from './bothelp.service.js';
+export { CoreService } from './core.service.js';
+export { EmailService, IEmailParams, IPersonaltEmailParams } from './email.service.js';
+export { SendpulseService, ISendpulseParams, ISendpulseService } from './sendpulse.service.js';
+export { SmsService, IPersonalSmsParams, ISmsParams } from './sms.service.js';
+export { WebService } from './web.service.js';
